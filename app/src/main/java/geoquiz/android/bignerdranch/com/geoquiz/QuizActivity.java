@@ -16,6 +16,7 @@ public class QuizActivity extends AppCompatActivity {
     private Button mTrueButton;
     private Button mFalseButton;
     private Button mNextButton;
+    private Button mBackButton;
     private TextView mQuestionTextView;
 
     private Question[] mQuestionBank = new Question[] {
@@ -27,6 +28,8 @@ public class QuizActivity extends AppCompatActivity {
     };
 
     private int mCurrentIndex = 0;
+    private int mBackCurrentIndex = 0; //With the introduction of a back variable to solely take in the negative value,
+                                       //it allows us to move backwards in our index
 
     private void updateQuestion(){
         int question = mQuestionBank[mCurrentIndex].getTextResId();
@@ -72,12 +75,25 @@ public class QuizActivity extends AppCompatActivity {
 
             }
         });
+        mBackButton = (Button) findViewById(R.id.back_button);
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBackCurrentIndex = mBackCurrentIndex-1;
+                mCurrentIndex = Math.abs(mBackCurrentIndex) % mQuestionBank.length;
+                Toast.makeText(QuizActivity.this, "mCurrentIndex is " + mCurrentIndex, Toast.LENGTH_SHORT).show();
+                int question = mQuestionBank[mCurrentIndex].getTextResId();
+                mQuestionTextView.setText(question);
+                updateQuestion();
+            }
+        });
 
         mNextButton = (Button) findViewById(R.id.next_button);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex+1) % mQuestionBank.length;
+                Toast.makeText(QuizActivity.this, "mCurrentIndex is " + mCurrentIndex, Toast.LENGTH_SHORT).show();
                 int question = mQuestionBank[mCurrentIndex].getTextResId();
                 mQuestionTextView.setText(question);
                 updateQuestion();
